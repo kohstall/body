@@ -30,7 +30,7 @@ class Spine():
 
             # --- DECODE readings
 
-            readings_raw = np.frombuffer(readings_bytes, dtype=np.int8)
+            readings_raw = np.frombuffer(readings_bytes, dtype=np.uint8)
             return readings_raw
         else:
             return -1
