@@ -1,23 +1,23 @@
 import cerebellum
+from llm_fns import *
 
 cerebellum = cerebellum.Cerebellum()
-
-
-
-
+current_position, touch = cerebellum.move([0, 0], 1, "stop")
+command = "Trace out a small square quickly."
 while 1:
 
-    #wait for speech to text --> text
+    # wait for speech to text --> text
 
-    #create prompt <-- text, current position, touch
+    # create prompt <-- text, current position, touch
+    command_type = classify_action_or_speech(command)
+    if command_type == "speech":
+        answer = reply_to_speech(command, current_position, touch)
+        # speak answer
+        print(answer)
+    elif command_type == "action":
+        coords, velocity, stop_on_touch = generate_action(
+            command, current_position, touch, action_examples
+        )
 
-    # ask LLM
-
-    # exec output from LLM
-    #speak 
-    # or motion
-
-    #for loop over list of commands:
-
-        #cerebellum.move([0, 1], 1, "continue")
-        current_postion, touch = cerebellum.move([0, 1], 1, "stop")
+    for coord in coords:
+        current_position, touch = cerebellum.move(coord, velocity, stop_on_touch)
