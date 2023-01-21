@@ -121,6 +121,6 @@ void loop() {
   force[1] = (uint8_t)(analogRead(A1)/16);
   force[2] = (uint8_t)(analogRead(A2)/16);
   
-  delay(100);
+  delay(1);
   
 }

@@ -5,44 +5,45 @@ import time
 # local stuff
 import stembrain
 
-FORCE_THRESHOLD = 10
+FORCE_THRESHOLD = 6
 
 
 class Cerebellum():
 
     def __init__(self):
         self.spine = stembrain.Spine()
-        self.desired_position = np.array([0, 0, 0], dtype=np.int8)
+        self.current_position = np.array([0, 0, 0], dtype=np.int8)
         self.force = np.array([0, 0, 0])
-        self.force_calibration = np.array([119, 120, 121])
-        #command_list = ["waypoint_motion([-2, 2], 1, "continue")","waypoint_motion([2, 0], 1, "continue")","waypoint_motion([-2, -2], 1, "continue")"]
+        self.force_calibration = np.array([127, 127, 127])
+        #command_list = ["position_motion([-2, 2], 1, "continue")","position_motion([2, 0], 1, "continue")","position_motion([-2, -2], 1, "continue")"]
         #force_calibration = np.array([0, 0, 0])
 
         self.t0 = time.time()
         # main superloop
-        self.start_waypoint = np.array([0, 0])
-        self.start_time = time.time()
+        self.current_position = np.array([0, 0])
+        self.touch_detected = 0
 
-    def move(self, target_waypoint, velocity, mode):
-
-        while True:
+    def move(self, target_position, velocity, mode):
+        start_position = self.current_position
+        start_time = time.time()
+        distance = np.linalg.norm(target_position - start_position)
+        T = distance / velocity
+        self.touch_detected = 0
+        while True and T>0:
         # --- heartbeat
-            time.sleep(0.1)
-
-            t = time.time() - self.t0
-            t_current_move = time.time() - self.start_time
+            time.sleep(0.02)
 
             # --- calculations go here
-            target_waypoint = np.array([0, 1])
-            velocity = 1
-            distance = np.linalg.norm(target_waypoint - self.start_waypoint)
-            ramp_progress = t_current_move / distance * velocity
+            ramp_progress = (time.time() - start_time) / T
 
-            self.current_position[0:2] = 10 * (self.start_waypoint + (target_waypoint - self.start_waypoint) * ramp_progress)
-            self.current_position[2] = 30 
+            self.current_position = start_position + (target_position - start_position) * ramp_progress
 
             # --- Send motion commands to robot and receive sensor readings
-            readings_raw = self.spine.communicate(np.concatenate([np.clip(self.current_position,0,100), [-1]]))
+            position_command = np.zeros(3)
+            position_command[0:2] = 50 + 10 * self.current_position
+            position_command[2] = 30 
+
+            readings_raw = self.spine.communicate(np.concatenate([np.clip(position_command,0,100), [-1]]))
             print(readings_raw)
             if isinstance(readings_raw, int):
                 print('ERROR: no readings')
@@ -52,13 +53,20 @@ class Cerebellum():
                 self.force[2] = -self.force[2] 
             
             # --- print readings
-            print('desired position', self.current_position, 'readings_raw', readings_raw, 'force', self.force)
+            print('current_position', self.current_position, 'readings_raw', readings_raw, 'force', self.force, 'ramp_progress', ramp_progress)
 
             if ramp_progress >= 1:
-                return self.current_position[0:2], 0
+                print('cerebellum done without touch')
+                break
 
-            if mode =='stop' and any(self.force > FORCE_THRESHOLD):
-                return self.current_position[0:2], 1
+            if mode =='stop' and any(np.abs(np.array(self.force)) > FORCE_THRESHOLD):
+                print('cerebellum done with touch')
+                self.touch_detected = 1
+                break
+
+        if any(np.abs(np.array(self.force)) > FORCE_THRESHOLD):
+            self.touch_detected = 1
+        return self.current_position, self.touch_detected
 
 
 
