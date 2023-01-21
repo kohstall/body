@@ -3,7 +3,7 @@ from llm_fns import *
 
 cerebellum = cerebellum.Cerebellum()
 current_position, touch = cerebellum.move([0, 0], 1, "stop")
-command = "Trace out a small square quickly."
+command = "Trace out a large square quickly."
 while 1:
 
     # wait for speech to text --> text
@@ -18,11 +18,12 @@ while 1:
         coords, velocity, _ = generate_action(
             command, current_position, touch, action_examples
         )
+        print(coords, velocity)
 
     for coord in coords:
         current_position, touch = cerebellum.move(coord, velocity, "continue")
 
-    # current_postion, touch = cerebellum.move([0, 5], 1, "continue")
-    # print('[brain] done',current_postion, touch)
-    # current_postion, touch = cerebellum.move([0, 0], 5, "stop")
-    # print('[brain] done',current_postion, touch)
+# current_postion, touch = cerebellum.move([0, 5], 1, "continue")
+# print("[brain] done", current_postion, touch)
+# current_postion, touch = cerebellum.move([0, 0], 5, "stop")
+# print("[brain] done", current_postion, touch)
