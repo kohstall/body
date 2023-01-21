@@ -21,3 +21,8 @@ while 1:
 
     for coord in coords:
         current_position, touch = cerebellum.move(coord, velocity, "continue")
+
+    # current_postion, touch = cerebellum.move([0, 5], 1, "continue")
+    # print('[brain] done',current_postion, touch)
+    # current_postion, touch = cerebellum.move([0, 0], 5, "stop")
+    # print('[brain] done',current_postion, touch)
