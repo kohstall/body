@@ -1,3 +1,6 @@
+import openai
+import time
+
 benchmark_questions =[
     {'Question': "What is your name?", 'Answer': "speak(\"My name is Dude.\")"},
     {'Question': "Draw a triangle. You are at position [-2, -2]", 'Answer': "[waypoint_motion([-2, 2], 1, \"continue\"),waypoint_motion([2, 0], 1, \"continue\"),waypoint_motion([-2, -2], 1, \"continue\")]"},
@@ -17,3 +20,51 @@ You can do the following actions:
 - speak("text"), where text is the text you want to say.
 
 '''
+
+
+
+
+GPT3_API_KEY = "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"
+
+results = []
+
+for i, sample in enumerate(benchmark_questions):
+    question = sample['question']
+    prompt = intro + "\nQuestion:" + f" \"{question}\", \n\nAnswer:"
+    
+
+    openai.api_key = GPT3_API_KEY
+    if i == 0:
+        print('invoking GPT with: ', prompt)
+    else:
+        print('invoking GPT with: ', sample['question'])
+    gpt_response = openai.Completion.create(
+        #engine="text-curie-001",
+        engine="text-davinci-003",
+        #prompt=f"you weigh 50 kg and your name is Mona and you are a robot\nQ: What are you made out of?\n\nA:",
+        prompt=prompt,
+        temperature=0,
+        max_tokens=20,
+        top_p=1,
+        frequency_penalty=0.0,
+        presence_penalty=0.0,
+        stop=["\n"]
+    )
+    response = gpt_response["choices"][0]["text"]
+
+    category2n={'action': 1, 'answer': 2, 'web': 3}
+
+    print('should: ', sample['category'], category2n[sample['category']], ' is ', response)
+
+    if str(category2n[sample['category']]) in response:
+        print('correct')
+        results.append(1)
+        
+    else:
+        print('wrong  ')
+        results.append(0)
+
+print('results: ', results)
+
+score = sum(results) / len(results)
+print('score: ', score)
