@@ -15,9 +15,9 @@ while 1:
         # speak answer
         print(answer)
     elif command_type == "action":
-        coords, velocity, stop_on_touch = generate_action(
+        coords, velocity, _ = generate_action(
             command, current_position, touch, action_examples
         )
 
     for coord in coords:
-        current_position, touch = cerebellum.move(coord, velocity, stop_on_touch)
+        current_position, touch = cerebellum.move(coord, velocity, "continue")
