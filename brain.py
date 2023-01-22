@@ -21,7 +21,7 @@ while 1:
         # once we have exhausted the available calls
         # instead of `r.recognize_google(audio)`
         command = r.recognize_google(audio)
-        validate_command(command)
+        print(command)
 
     except sr.UnknownValueError:
         print("Google Speech Recognition could not understand audio")
@@ -44,7 +44,7 @@ while 1:
 
     # for loop over list of commands:
 
-# cerebellum.move([0, 1], 1, "continue")
+cerebellum.move([0, 1], 1, "continue")
 current_postion, touch = cerebellum.move([0, 5], 1, "continue")
 print("[brain] done", current_postion, touch)
 current_postion, touch = cerebellum.move([0, 0], 5, "stop")
