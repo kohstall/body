@@ -1,17 +1,17 @@
-import speech_recognition as sr
-
-import cerebellum
-from llm_fns import *
 import math
 import random
 
+import speech_recognition as sr
+
+import cerebellum
 from commands import say
+from llm_fns import *
 
 r = sr.Recognizer()
 mic = sr.Microphone()
 
 cerebellum = cerebellum.Cerebellum()
-current_position, touch, mode = cerebellum.move([-5, -5], 3, "continue")
+current_position, touch = cerebellum.move([-5, -5], 3, "continue")
 action_examples = base_action_examples
 # current_position, touch = "[0, 0]", "False"
 
@@ -31,6 +31,13 @@ action_examples = base_action_examples
 def speak(text):
     say(text)
     return None
+
+
+def validate_action(action_str):
+    """
+    Parse action_str to validate it is a well formed command for
+    the exec method
+    """
 
 
 while 1:
@@ -69,10 +76,11 @@ while 1:
 
     for action in actions.split("\n"):
         try:
-            print(current_position, touch, mode)
             out = None
             exec_action = f"out = {action}"
             print(exec_action)
+            if '"stop"' in exec_action:
+                say("Ooops, what's that doing here?")
             exec(exec_action)
             if out and len(out) > 1:
                 current_position, touch, mode = out
