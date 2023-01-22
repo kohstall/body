@@ -104,6 +104,10 @@ def generate_action(command, current_position, is_touching, examples):
     )
 
     coords, velocity, stop_on_touch = eval(results)
+    if stop_on_touch == 1:
+        stop_on_touch = "stop"
+    else:
+        stop_on_touch = "continue"
 
     return coords, velocity, stop_on_touch
 
@@ -123,3 +127,37 @@ Is touching object: True
 Task: Move left slowly.
 Output:[[(-5, 0)], 0.1, 0]""",
 ]
+
+
+class Callback:
+    def determine_actor(self):
+        return True
+
+    def list_steps(self):
+        return True
+
+    def list_speech(self):
+        return True
+
+    def generate_speech(self):
+        return True
+
+    def generate_action(self):
+        return True
+
+    def determine_state(self):
+        return True
+
+    def next_action(self):
+        return True
+
+
+class CallbackHandler:
+    def __init__(self, cbs=None):
+        self.cbs = cbs if cbs else []
+
+    def determine_actor(self):
+        res = True
+        for cb in self.cbs:
+            res = res and cb.determine_actor()
+        return res
