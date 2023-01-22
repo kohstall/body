@@ -66,7 +66,7 @@ def process_examples(example_list):
 
     example_string = ""
     for i, example in enumerate(example_list):
-        example_string += f"""Example {i}:
+        example_string += f"""History {i}:
         {example}\n\n
         """
     return example_string
@@ -109,10 +109,20 @@ def generate_action(command, current_position, is_touching, examples):
     else:
         stop_on_touch = "continue"
 
-    return coords, velocity, stop_on_touch
+    action_example = """Current position:{current_position}
+    Is touching object: {touch}
+    Task: {task}
+    Output: {output}""".format(
+        current_position=str(current_position),
+        touch=str(is_touching),
+        task=command,
+        output=results,
+    )
+
+    return coords, velocity, stop_on_touch, action_example
 
 
-action_examples = [
+base_action_examples = [
     """Current position: (0, 0)
 Is touching object: False
 Task: Move to the right until you hit an object.

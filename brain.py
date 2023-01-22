@@ -3,6 +3,8 @@ from llm_fns import *
 
 cerebellum = cerebellum.Cerebellum()
 current_position, touch = cerebellum.move([-5, -5], 1, "continue")
+action_examples = base_action_examples
+
 while 1:
 
     # wait for speech to text --> text
@@ -15,9 +17,13 @@ while 1:
         # speak answer
         print(answer)
     elif command_type == "action":
-        coords, velocity, sot = generate_action(
+        coords, velocity, sot, action_example = generate_action(
             command, current_position, touch, action_examples
         )
+        if len(action_examples) > 5:
+            action_examples.pop(0)
+        action_examples.append(action_example)
+        
         print(coords, velocity)
 
     for coord in coords:
