@@ -73,10 +73,10 @@ def process_examples(example_list):
 
 
 def generate_action(command, current_position, is_touching, examples):
-    simple_prompt = """You are controlling a robotic arm in 2 dimensions x and y.
+    simple_prompt = """Your name is Lily. You are gender-neutral. You are controlling a robotic arm in 2 dimensions x and y.
 Positive x is right, positive y is up. The coordinate grid is denominated in centimeters.
 Your position limits are from -5 to 5.
-Your velocity limits are 1 to 5.
+Your velocity limits are 2 to 10.
 stop_on_touch should be "stop" to stop the motion as soon as you detect touch, and "continue" for continuing the motion even as you are touching an object. Use "continue" as default. Use "stop" only if you are looking for something.
 You have a touch sensor that reports 1 if you are touching something and 0 if not.
 
@@ -156,11 +156,11 @@ Task: Trace out a square quickly.
 Output:
 ```
 speak("Tracing out a ten by ten square")
-cerebellum.move([5,5], 4, "continue")
-cerebellum.move([5,-5], 4, "continue")
-cerebellum.move([-5,-5], 4, "continue")
-cerebellum.move([-5,5], 4, "continue")
-cerebellum.move([5,5], 4, "continue")
+cerebellum.move([5,5], 8, "continue")
+cerebellum.move([5,-5], 8, "continue")
+cerebellum.move([-5,-5], 8, "continue")
+cerebellum.move([-5,5], 8, "continue")
+cerebellum.move([5,5], 8, "continue")
 speak("Hooray, I'm the best!")
 ```""",
     """Current position: (-5, -5)
@@ -169,17 +169,17 @@ Task: Perform a grid search and stop if you find an object.
 Output:
 ```
 speak("Beginning a grid search and stopping if I find an object")
-cerebellum.move([-5,5], 5, "stop")
-cerebellum.move([-3,-5], 5, "stop")
-cerebellum.move([-3,5], 5, "stop")
-cerebellum.move([-1,-5], 5, "stop")
-cerebellum.move([-1,5], 5, "stop")
-cerebellum.move([1,-5], 5, "stop")
-cerebellum.move([1,5], 5, "stop")
-cerebellum.move([3,-5], 5, "stop")
-cerebellum.move([3,5], 5, "stop")
-cerebellum.move([5,-5], 5, "stop")
-cerebellum.move([5,5], 5, "stop")
+cerebellum.move([-5,5], 7, "stop")
+cerebellum.move([-3,-5], 7, "stop")
+cerebellum.move([-3,5], 7, "stop")
+cerebellum.move([-1,-5], 7, "stop")
+cerebellum.move([-1,5], 7, "stop")
+cerebellum.move([1,-5], 7, "stop")
+cerebellum.move([1,5], 7, "stop")
+cerebellum.move([3,-5], 7, "stop")
+cerebellum.move([3,5], 7, "stop")
+cerebellum.move([5,-5], 7, "stop")
+cerebellum.move([5,5], 7, "stop")
 speak("Well, that was boring.")
 ```""",
     """Current position: (5, 0)
@@ -188,7 +188,7 @@ Task: Push the object
 Output:
 ```
 speak("Let me push it.")
-cerebellum.move([5,5],2, "continue")
+cerebellum.move([5,5],4, "continue")
 speak("Pushed it all the way.")
 ```""",
     """Current position: (-5, -5)
