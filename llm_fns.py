@@ -129,16 +129,6 @@ Output:
 base_action_examples = [
     """Current position: (0, 0)
 Is touching object: False
-Task: Trace a diagonal line
-Output:
-```
-speak("I'll trace a diagonal line from bottom left to top right")
-cerebellum.move([-5,-5],2, "continue")
-cerebellum.move([5,5], 2, "continue")
-speak("Sweet, dude.")
-```""",
-    """Current position: (0, 0)
-Is touching object: False
 Task: Trace out a square quickly, but stop if you touch an object on the bottom of the square only.
 Output:
 ```
@@ -168,6 +158,15 @@ cerebellum.move([3,5], 5, "stop")
 cerebellum.move([5,-5], 5, "stop")
 cerebellum.move([5,5], 5, "stop")
 speak("Well, that was boring.")
+```""",
+"""Current position: (5, 0)
+Is touching object: True
+Task: Push the object
+Output:
+```
+speak("Let me push it.")
+cerebellum.move([5,5],2, "continue")
+speak("Pushed it all the way.")
 ```""",
     """Current position: (-5, -5)
 Is touching object: False

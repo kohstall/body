@@ -41,6 +41,7 @@ def validate_action(action_str):
 
 
 while 1:
+    command = ""
 
     with mic as source:
         print("Listening for commands")
@@ -65,6 +66,9 @@ while 1:
             )
         )
 
+    if command == "":
+        continue
+
     #command = input("State a command: ")
 
     actions, action_example = generate_action(
@@ -82,6 +86,7 @@ while 1:
             exec(exec_action)
             if out and len(out) > 1:
                 current_position, touch, mode = out
+                current_position = tuple(round(el, 2) for el in current_position)
                 if mode == "stop" and touch == 1:
                     say("Ooops, what's that doing here?")
                     break

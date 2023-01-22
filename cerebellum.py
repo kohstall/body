@@ -12,7 +12,7 @@ class Cerebellum:
         self.spine = stembrain.Spine()
         self.current_position = np.array([0, 0, 0], dtype=np.int8)
         self.force = np.array([0, 0, 0])
-        self.force_calibration = np.array([152, 120, 119])
+        self.force_calibration = np.array([152, 121, 121])
         # command_list = ["position_motion([-2, 2], 1, "continue")","position_motion([2, 0], 1, "continue")","position_motion([-2, -2], 1, "continue")"]
         # force_calibration = np.array([0, 0, 0])
 
