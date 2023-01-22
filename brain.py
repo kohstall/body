@@ -4,7 +4,7 @@ import random
 import speech_recognition as sr
 
 import cerebellum
-from commands import say
+from commands import check_is_command, say
 from llm_fns import *
 
 r = sr.Recognizer()
@@ -53,7 +53,9 @@ while 1:
         # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
         # once we have exhausted the available calls
         # instead of `r.recognize_google(audio)`
-        command = r.recognize_google(audio)
+        command = r.recognize_google(audio).lower()
+        if not check_is_command(command):
+            continue
         # prompt = f"Did you meant to say: {command}? "
         # say(prompt)
 
