@@ -55,6 +55,7 @@ while 1:
         # instead of `r.recognize_google(audio)`
         command = r.recognize_google(audio).lower()
         if not check_is_command(command):
+            print("ignoring command", command)
             continue
         # prompt = f"Did you meant to say: {command}? "
         # say(prompt)

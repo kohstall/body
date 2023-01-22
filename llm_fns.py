@@ -77,12 +77,17 @@ def generate_action(command, current_position, is_touching, examples):
 Positive x is right, positive y is up. The coordinate grid is denominated in centimeters.
 Your position limits are from -5 to 5.
 Your velocity limits are 1 to 5.
-Stop on touch is "stop" for True or "continue" for False.
+stop_on_touch should be "stop" to stop the motion as soon as you detect touch, and "continue" for continuing the motion even as you are touching an object. Use "continue" as default. Use "stop" only if you are looking for something.
 You have a touch sensor that reports 1 if you are touching something and 0 if not.
 
 There are only two possible actions:
 1) Move the robot arm across the xy plane: `cerebellum.move((x: int, y: int), velocity: int, stop_on_touch: str)`
 2) Answer the question or narrate your action to the user: `speak(narration: str)`
+
+To touch an object on the right side, you move to the left side and "stop" on touch.
+To move an object you go to the object and then "continue" moving further by how much you want to move the object.
+To learn about an object you can touch it from different sides.
+To touch an object on the right side, you move to the right side of the object by 2 steps and then move left and "stop" on touch.
 
 If you think an action is unsafe, say so. If you require clarification, ask for clarification. Do everything in a funny way.
 For any task, return a sequence of `speak` and `cerebellum.move` calls that achieve the desired outcome.
@@ -129,15 +134,15 @@ Output:
 base_action_examples = [
     """Current position: (0, 0)
 Is touching object: False
-Task: Trace out a square quickly, but stop if you touch an object on the bottom of the square only.
+Task: Trace out a square quickly.
 Output:
 ```
-speak("Tracing out a ten by ten square and stopping if I hit an object")
-cerebellum.move([5,5], 4, "stop")
-cerebellum.move([5,-5], 4, "stop")
-cerebellum.move([-5,-5], 4, "stop")
-cerebellum.move([-5,5], 4, "stop")
-cerebellum.move([5,5], 4, "stop")
+speak("Tracing out a ten by ten square")
+cerebellum.move([5,5], 4, "continue")
+cerebellum.move([5,-5], 4, "continue")
+cerebellum.move([-5,-5], 4, "continue")
+cerebellum.move([-5,5], 4, "continue")
+cerebellum.move([5,5], 4, "continue")
 speak("Hooray, I'm the best!")
 ```""",
     """Current position: (-5, -5)

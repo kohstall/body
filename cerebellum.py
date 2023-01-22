@@ -65,7 +65,7 @@ class Cerebellum:
 
             # --- print readings
             i += 1
-            if i % 1000 == 0:
+            if i % 10 == 0:
                 print(
                     "current_position",
                     self.current_position,
