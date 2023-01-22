@@ -16,6 +16,17 @@ def validate_command(command):
     pass
 
 
+def check_is_command(audio_text):
+    SPECIAL_KEYWORDS = ["lilly", "lil", "lily"]
+    if audio_text is None:
+        return False
+    if not isinstance(audio_text, str):
+        return False
+    if not any(word in audio_text for word in SPECIAL_KEYWORDS):
+        return False
+    return True
+
+
 def get_random_string(length):
     # choose from all lowercase letter
     letters = string.ascii_lowercase
