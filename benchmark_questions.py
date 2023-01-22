@@ -44,7 +44,7 @@ for i, sample in enumerate(benchmark_questions):
         #prompt=f"you weigh 50 kg and your name is Mona and you are a robot\nQ: What are you made out of?\n\nA:",
         prompt=prompt,
         temperature=0,
-        max_tokens=20,
+        max_tokens=100,
         top_p=1,
         frequency_penalty=0.0,
         presence_penalty=0.0,
