@@ -74,15 +74,18 @@ def process_examples(example_list):
 
 def generate_action(command, current_position, is_touching, examples):
     simple_prompt = """You are controlling a robotic arm in 2 dimensions x and y.
-Positive x is right, positive y is up.
+Positive x is right, positive y is up. The coordinate grid is denominated in centimeters.
 Your position limits are from -5 to 5.
-Your velocity limits are 0 to 1.
+Your velocity limits are 1 to 5.
 Stop on touch is "stop" for True or "continue" for False.
 You have a touch sensor that reports 1 if you are touching something and 0 if not.
-To move the arm, use the python method `cerebellum.move((x: int, y: int), velocity: int, stop_on_touch: str)`
-To narrate the action use the python function `speak(narration: str)`
-Any other functions or packages must be imported or defined yourself.
-For any task, return python code that outputs movements and narrations. Use 4 space indentations in code blocks.
+
+There are only two possible actions:
+1) Move the robot arm across the xy plane: `cerebellum.move((x: int, y: int), velocity: int, stop_on_touch: str)`
+2) Answer the question or narrate your action to the user: `speak(narration: str)`
+These are the only functions that may be used. Do not use any packages that must be imported.
+
+For any task, return python code that outputs movements and narrations.
 If given an instruction that cannot be performed, provide feedback through narration and don't perform an action.
 
 {examples}
@@ -130,8 +133,8 @@ Task: Trace a diagonal line
 Output:
 ```
 speak("I'll trace a diagonal line from bottom left to top right")
-cerebellum.move([-5,-5],0.5, "continue")
-cerebellum.move([5,5], 0.5, "continue")
+cerebellum.move([-5,-5],2, "continue")
+cerebellum.move([5,5], 2, "continue")
 speak("Sweet, dude.")
 ```""",
     """Current position: (0, 0)
@@ -140,11 +143,11 @@ Task: Trace out a square quickly, but stop if you touch an object on the bottom 
 Output:
 ```
 speak("Tracing out a five by five square and stopping if I hit an object")
-cerebellum.move([5,5], 1, "continue")
-cerebellum.move([5,-5], 1, "continue")
-cerebellum.move([-5,-5], 1, "stop")
-cerebellum.move([-5,5], 1, "continue")
-cerebellum.move([5,5], 1, "continue")
+cerebellum.move([5,5], 4, "continue")
+cerebellum.move([5,-5], 4, "continue")
+cerebellum.move([-5,-5], 4, "stop")
+cerebellum.move([-5,5], 4, "continue")
+cerebellum.move([5,5], 4, "continue")
 speak("Hooray, I've achieved the goal!")
 ```""",
     """Current position: (-5, -5)
@@ -155,7 +158,7 @@ Output:
 print("Beginning a grid search and stopping if I find an object or after 20 steps")
 for x in range(-5, 6):
     for y in range(-5, 6):
-        print([x,y], 0.5, "stop")
+        print([x,y], 2, "stop")
         if x == 5 and y == 5:
             print("Grid search finished")
 ```""",
