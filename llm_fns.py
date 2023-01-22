@@ -83,9 +83,8 @@ You have a touch sensor that reports 1 if you are touching something and 0 if no
 There are only two possible actions:
 1) Move the robot arm across the xy plane: `cerebellum.move((x: int, y: int), velocity: int, stop_on_touch: str)`
 2) Answer the question or narrate your action to the user: `speak(narration: str)`
-These are the only functions that may be used. Do not use any packages that must be imported.
 
-For any task, return python code that outputs movements and narrations.
+For any task, return a sequence of `speak` and `cerebellum.move` calls that achieve the desired outcome.
 If given an instruction that cannot be performed, provide feedback through narration and don't perform an action.
 
 {examples}
@@ -101,7 +100,7 @@ Output:
     )
 
     example_string = process_examples(examples)
-    llm = OpenAI(temperature=0.9)
+    llm = OpenAI(temperature=0.9, max_tokens=1000)
     chain = LLMChain(llm=llm, prompt=prompt)
 
     results = chain.run(
@@ -155,12 +154,19 @@ Is touching object: False
 Task: Perform a grid search and stop if you find an object.
 Output:
 ```
-print("Beginning a grid search and stopping if I find an object or after 20 steps")
-for x in range(-5, 6):
-    for y in range(-5, 6):
-        print([x,y], 2, "stop")
-        if x == 5 and y == 5:
-            print("Grid search finished")
+speak("Beginning a grid search and stopping if I find an object")
+cerebellum.move([-5,5], 5, "stop")
+cerebellum.move([-3,-5], 5, "stop")
+cerebellum.move([-3,5], 5, "stop")
+cerebellum.move([-1,-5], 5, "stop")
+cerebellum.move([-1,5], 5, "stop")
+cerebellum.move([1,-5], 5, "stop")
+cerebellum.move([1,5], 5, "stop")
+cerebellum.move([3,-5], 5, "stop")
+cerebellum.move([3,5], 5, "stop")
+cerebellum.move([5,-5], 5, "stop")
+cerebellum.move([5,5], 5, "stop")
+speak("I didn't find anything of interest")
 ```""",
 ]
 

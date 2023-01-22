@@ -12,7 +12,7 @@ class Cerebellum:
         self.spine = stembrain.Spine()
         self.current_position = np.array([0, 0, 0], dtype=np.int8)
         self.force = np.array([0, 0, 0])
-        self.force_calibration = np.array([151, 120, 120])
+        self.force_calibration = np.array([152, 120, 119])
         # command_list = ["position_motion([-2, 2], 1, "continue")","position_motion([2, 0], 1, "continue")","position_motion([-2, -2], 1, "continue")"]
         # force_calibration = np.array([0, 0, 0])
 
@@ -88,7 +88,7 @@ class Cerebellum:
 
         if any(np.abs(np.array(self.force)) > FORCE_THRESHOLD):
             self.touch_detected = 1
-        return self.current_position, self.touch_detected
+        return self.current_position, self.touch_detected, mode
 
     # === Experiments:
     # what are the best parameters, velocity, position, relative position, and how to integrate force
