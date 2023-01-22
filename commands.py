@@ -29,7 +29,7 @@ def generate_random_tmp_folder_name():
 
 
 def say(text):
-    myobj = gTTS(text=text, lang=language, slow=False)
+    myobj = gTTS(text=text, lang=language, slow=False, tld="ca")
     temp_name = generate_random_tmp_folder_name()
     myobj.save(temp_name)
     print("prepping to play")
