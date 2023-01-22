@@ -74,19 +74,24 @@ def process_examples(example_list):
 
 def generate_action(command, current_position, is_touching, examples):
     simple_prompt = """You are controlling a robotic arm in 2 dimensions x and y.
-    Positive x is right, positive y is up.
-    Your position limits are from -5 to 5.
-    You velocity limits are 0 to 1.
-    Stop on touch is 1 for True or 0 for False.
-    You have a touch sensor that reports 1 if you are touching something and 0 if not.
-    For any task, return an array of the form [[(x position, y position)], velocity, stop on touch]
+Positive x is right, positive y is up.
+Your position limits are from -5 to 5.
+Your velocity limits are 0 to 1.
+Stop on touch is "stop" for True or "continue" for False.
+You have a touch sensor that reports 1 if you are touching something and 0 if not.
+To move the arm, use the python method `cerebellum.move((x: int, y: int), velocity: int, stop_on_touch: str)`
+To narrate the action use the python function `speak(narration: str)`
+Any other functions or packages must be imported or defined yourself.
+For any task, return python code that outputs movements and narrations. Use 4 space indentations in code blocks.
+If given an instruction that cannot be performed, provide feedback through narration and don't perform an action.
 
-    {examples}
+{examples}
 
-    Current position:{current_position}
-    Is touching object: {touch}
-    Task: {task}
-    Output:"""
+Current position:{current_position}
+Is touching object: {touch}
+Task: {task}
+Output:
+```"""
     prompt = PromptTemplate(
         input_variables=["current_position", "examples", "task", "touch"],
         template=simple_prompt,
@@ -103,11 +108,7 @@ def generate_action(command, current_position, is_touching, examples):
         touch=str(is_touching),
     )
 
-    coords, velocity, stop_on_touch = eval(results)
-    if stop_on_touch == 1:
-        stop_on_touch = "stop"
-    else:
-        stop_on_touch = "continue"
+    actions = results.strip("```").strip("\n")
 
     action_example = """Current position:{current_position}
     Is touching object: {touch}
@@ -119,55 +120,69 @@ def generate_action(command, current_position, is_touching, examples):
         output=results,
     )
 
-    return coords, velocity, stop_on_touch, action_example
+    return actions, action_example
 
 
 base_action_examples = [
     """Current position: (0, 0)
 Is touching object: False
-Task: Move to the right until you hit an object.
-Output: [[(5, 0)], 0.5, 1]
-""",
-    """Current position:(0, 0)
+Task: Trace a diagonal line
+Output:
+```
+speak("I'll trace a diagonal line from bottom left to top right")
+cerebellum.move([-5,-5],0.5, "continue")
+cerebellum.move([5,5], 0.5, "continue")
+speak("Sweet, dude.")
+```""",
+    """Current position: (0, 0)
 Is touching object: False
-Task: Trace out a small square quickly.
-Output:[[(2, 0), (2, 2), (0, 2), (0, 0)], 1, 0]""",
-    """Current position: (-5, 0)
-Is touching object: True
-Task: Move left slowly.
-Output:[[(-5, 0)], 0.1, 0]""",
+Task: Trace out a square quickly, but stop if you touch an object on the bottom of the square only.
+Output:
+```
+speak("Tracing out a five by five square and stopping if I hit an object")
+cerebellum.move([5,5], 1, "continue")
+cerebellum.move([5,-5], 1, "continue")
+cerebellum.move([-5,-5], 1, "stop")
+cerebellum.move([-5,5], 1, "continue")
+cerebellum.move([5,5], 1, "continue")
+speak("Hooray, I've achieved the goal!")
+```""",
+    """Current position: (-5, -5)
+Is touching object: False
+Task: Perform a grid search and stop if you find an object.
+Output:
+```
+print("Beginning a grid search and stopping if I find an object or after 20 steps")
+for x in range(-5, 6):
+    for y in range(-5, 6):
+        print([x,y], 0.5, "stop")
+        if x == 5 and y == 5:
+            print("Grid search finished")
+```""",
 ]
 
 
-class Callback:
-    def determine_actor(self):
-        return True
+def what_went_wrong(actions, error):
+    prompt = """You are controlling a robotic arm in 2 dimensions x and y.
+Positive x is right, positive y is up.
+Your position limits are from -5 to 5.
+Your velocity limits are 0 to 1.
+Stop on touch is "stop" for True or "continue" for False.
+You have a touch sensor that reports 1 if you are touching something and 0 if not.
+To move the arm, use the python method `cerebellum.move((x: int, y: int), velocity: int, stop_on_touch: str)`
+To narrate the action use the python function `speak(narration: str)`
 
-    def list_steps(self):
-        return True
+We tried to exec the following code:
+{actions}
+But it failed with the following error:
+{error}
 
-    def list_speech(self):
-        return True
+In natural language, what went wrong?"""
 
-    def generate_speech(self):
-        return True
-
-    def generate_action(self):
-        return True
-
-    def determine_state(self):
-        return True
-
-    def next_action(self):
-        return True
-
-
-class CallbackHandler:
-    def __init__(self, cbs=None):
-        self.cbs = cbs if cbs else []
-
-    def determine_actor(self):
-        res = True
-        for cb in self.cbs:
-            res = res and cb.determine_actor()
-        return res
+    llm = OpenAI(temperature=0.9)
+    type_prompt = PromptTemplate(
+        template=prompt,
+        input_variables=["actions", "error"],
+    )
+    llm_chain = LLMChain(llm=llm, prompt=type_prompt)
+    return llm_chain.run(actions=actions, error=str(error)[-100:]).strip()
