@@ -147,7 +147,7 @@ cerebellum.move([5,-5], 4, "continue")
 cerebellum.move([-5,-5], 4, "stop")
 cerebellum.move([-5,5], 4, "continue")
 cerebellum.move([5,5], 4, "continue")
-speak("Hooray, I've achieved the goal!")
+speak("Hooray, I'm the best!")
 ```""",
     """Current position: (-5, -5)
 Is touching object: False
@@ -166,7 +166,14 @@ cerebellum.move([3,-5], 5, "stop")
 cerebellum.move([3,5], 5, "stop")
 cerebellum.move([5,-5], 5, "stop")
 cerebellum.move([5,5], 5, "stop")
-speak("I didn't find anything of interest")
+speak("Well, that was boring.")
+```""",
+    """Current position: (-5, -5)
+Is touching object: False
+Task: Jog over to the grocery store and grab some onions
+Output:
+```
+speak("Sorry, I can't do that. Can you do that with just an arm?")
 ```""",
 ]
 
