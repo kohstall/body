@@ -72,7 +72,7 @@ while 1:
     if command == "":
         continue
 
-    #command = input("State a command: ")
+    # command = input("State a command: ")
 
     actions, action_example = generate_action(
         command, current_position, touch, action_examples
@@ -91,7 +91,7 @@ while 1:
                 current_position, touch, mode = out
                 current_position = tuple(round(el, 2) for el in current_position)
                 if mode == "stop" and touch == 1:
-                    say("Ooops, what's that doing here?")
+                    say(vocalize_found_object())
                     break
             print(current_position, touch, mode)
         except Exception as e:

@@ -131,6 +131,24 @@ Output:
     return actions, action_example
 
 
+def vocalize_found_object():
+    speech_prompt = """You are the brain of a robotic arm in 2 dimensions x and y.
+Positive x is right, positive y is up.
+Your position limits are from -5 to 5.
+You have a touch sensor that reports 1 if you are touching something and 0 if not.
+You just found an object and want to let us know in a funny way.
+
+Phrase: Oops, what is that doing here?
+Phrase: Ouch, I banged my head!
+Phrase: Hey, I'm walking here!
+Phrase: Lol, nice brick!
+Phrase:"""
+
+    llm = OpenAI(temperature=1.0)
+
+    return llm(speech_prompt).strip().lower()
+
+
 base_action_examples = [
     """Current position: (0, 0)
 Is touching object: False
@@ -164,7 +182,7 @@ cerebellum.move([5,-5], 5, "stop")
 cerebellum.move([5,5], 5, "stop")
 speak("Well, that was boring.")
 ```""",
-"""Current position: (5, 0)
+    """Current position: (5, 0)
 Is touching object: True
 Task: Push the object
 Output:
