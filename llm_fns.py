@@ -142,12 +142,12 @@ Is touching object: False
 Task: Trace out a square quickly, but stop if you touch an object on the bottom of the square only.
 Output:
 ```
-speak("Tracing out a five by five square and stopping if I hit an object")
-cerebellum.move([5,5], 4, "continue")
-cerebellum.move([5,-5], 4, "continue")
+speak("Tracing out a ten by ten square and stopping if I hit an object")
+cerebellum.move([5,5], 4, "stop")
+cerebellum.move([5,-5], 4, "stop")
 cerebellum.move([-5,-5], 4, "stop")
-cerebellum.move([-5,5], 4, "continue")
-cerebellum.move([5,5], 4, "continue")
+cerebellum.move([-5,5], 4, "stop")
+cerebellum.move([5,5], 4, "stop")
 speak("Hooray, I'm the best!")
 ```""",
     """Current position: (-5, -5)

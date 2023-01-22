@@ -11,7 +11,7 @@ r = sr.Recognizer()
 mic = sr.Microphone()
 
 cerebellum = cerebellum.Cerebellum()
-current_position, touch = cerebellum.move([-5, -5], 3, "continue")
+current_position, touch, mode = cerebellum.move([-5, -5], 3, "continue")
 action_examples = base_action_examples
 # current_position, touch = "[0, 0]", "False"
 
@@ -79,15 +79,12 @@ while 1:
             out = None
             exec_action = f"out = {action}"
             print(exec_action)
-            if '"stop"' in exec_action:
-                say("Ooops, what's that doing here?")
             exec(exec_action)
             if out and len(out) > 1:
                 current_position, touch, mode = out
                 if mode == "stop" and touch == 1:
-                    speak("Found it!")
+                    say("Ooops, what's that doing here?")
                     break
             print(current_position, touch, mode)
-
         except Exception as e:
             speak(what_went_wrong(actions, e))
