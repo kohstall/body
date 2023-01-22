@@ -17,7 +17,7 @@ def validate_command(command):
 
 
 def check_is_command(audio_text):
-    SPECIAL_KEYWORDS = ["lilly", "lil", "lily", "smelly", "really", "lillian", "lydia", "meaning", "Lee"]
+    SPECIAL_KEYWORDS = ["lilly", "lil", "lily", "smelly", "really", "lillian", "lydia", "meaning", "lee", "billy"]
     if audio_text is None:
         return False
     if not isinstance(audio_text, str):
