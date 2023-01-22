@@ -58,7 +58,7 @@ while 1:
             )
         )
 
-    # command = input("State a command: ")
+    #command = input("State a command: ")
 
     actions, action_example = generate_action(
         command, current_position, touch, action_examples
@@ -77,6 +77,7 @@ while 1:
             if out and len(out) > 1:
                 current_position, touch, mode = out
                 if mode == "stop" and touch == 1:
+                    speak("Found it!")
                     break
             print(current_position, touch, mode)
 
