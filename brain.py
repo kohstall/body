@@ -79,7 +79,7 @@ while 1:
             out = None
             exec_action = f"out = {action}"
             print(exec_action)
-            if "stop" in exec_action:
+            if '"stop"' in exec_action:
                 say("Ooops, what's that doing here?")
             exec(exec_action)
             if out and len(out) > 1:
