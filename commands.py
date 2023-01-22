@@ -1,28 +1,38 @@
-import speech_recognition as sr
+import os
+import random
+import stat
+import string
 
-r = sr.Recognizer()
-mic = sr.Microphone()
+from gtts import gTTS
+from pydub import AudioSegment
+from pydub.playback import play
 
-while 1:
+language = "en"
 
-    with mic as source:
-        print("Say something!")
-        r.adjust_for_ambient_noise(source, duration=0.1)
-        audio = r.listen(source, phrase_time_limit=4)
 
-    try:
-        # for testing purposes, we're just using the default API key
-        # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
-        # once we have exhausted the available calls
-        # instead of `r.recognize_google(audio)`
-        command = r.recognize_google(audio)
-        validate_command(command)
+def validate_command(command):
+    # check if command is valid
+    # return True or False
+    pass
 
-    except sr.UnknownValueError:
-        print("Google Speech Recognition could not understand audio")
-    except sr.RequestError as e:
-        print(
-            "Could not request results from Google Speech Recognition service; {0}".format(
-                e
-            )
-        )
+
+def get_random_string(length):
+    # choose from all lowercase letter
+    letters = string.ascii_lowercase
+    result_str = "".join(random.choice(letters) for i in range(length))
+    return result_str
+
+
+def generate_random_tmp_folder_name():
+    file_name = get_random_string(10)
+    return f"/tmp/{file_name}.mp3"
+
+
+def say(text):
+    myobj = gTTS(text=text, lang=language, slow=False)
+    temp_name = generate_random_tmp_folder_name()
+    myobj.save(temp_name)
+    print("prepping to play")
+    song = AudioSegment.from_mp3(temp_name)
+    print("playing")
+    play(song)

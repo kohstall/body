@@ -1,6 +1,7 @@
-import cerebellum
-
 import speech_recognition as sr
+
+import cerebellum
+from commands import say
 
 r = sr.Recognizer()
 mic = sr.Microphone()
@@ -21,7 +22,8 @@ while 1:
         # once we have exhausted the available calls
         # instead of `r.recognize_google(audio)`
         command = r.recognize_google(audio)
-        print(command)
+        prompt = f"Did you meant to say: {command}? "
+        say(prompt)
 
     except sr.UnknownValueError:
         print("Google Speech Recognition could not understand audio")
